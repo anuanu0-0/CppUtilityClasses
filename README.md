@@ -5,10 +5,7 @@
   - Undirected
 - Segment Trees
 - Disjoint Set Union
-
-## TODO
-
 - Big Integer
-- Queue
+- Queue & Stacks
 - Trie
 - Priority Queue
