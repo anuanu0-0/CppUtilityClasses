@@ -2,7 +2,7 @@
 #define DSU_H
 #include <vector>
 
-//a class for disjoint set union data structure
+// Class for disjoint set union data structure
 class DSU
 {
 public:

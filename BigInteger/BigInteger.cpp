@@ -1,81 +1,23 @@
+#ifndef BIGINTEGER_H
+#define BIGINTEGER_H
 
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <cmath>
+#include "BigInt.h"
 #define MAX 10000 // for strings
 
-using namespace std;
-class BigInteger
+BigInteger::BigInteger() // empty constructor initializes zero
 {
-private:
-    string number;
-    bool sign;
-
-public:
-    BigInteger();                   // empty constructor initializes zero
-    BigInteger(string s);           // "string" constructor
-    BigInteger(string s, bool sin); // "string" constructor
-    BigInteger(int n);              // "int" constructor
-    void setNumber(string s);
-    const string &getNumber(); // retrieves the number
-    void setSign(bool s);
-    const bool &getSign();
-    BigInteger absolute(); // returns the absolute value
-    void operator=(BigInteger b);
-    bool operator==(BigInteger b);
-    bool operator!=(BigInteger b);
-    bool operator>(BigInteger b);
-    bool operator<(BigInteger b);
-    bool operator>=(BigInteger b);
-    bool operator<=(BigInteger b);
-    BigInteger &operator++();   // prefix
-    BigInteger operator++(int); // postfix
-    BigInteger &operator--();   // prefix
-    BigInteger operator--(int); // postfix
-    BigInteger operator+(BigInteger b);
-    BigInteger operator-(BigInteger b);
-    BigInteger operator*(BigInteger b);
-    BigInteger operator/(BigInteger b);
-    BigInteger operator%(BigInteger b);
-    BigInteger &operator+=(BigInteger b);
-    BigInteger &operator-=(BigInteger b);
-    BigInteger &operator*=(BigInteger b);
-    BigInteger &operator/=(BigInteger b);
-    BigInteger &operator%=(BigInteger b);
-    BigInteger &operator[](int n);
-    BigInteger operator-(); // unary minus sign
-    operator string();      // for conversion from BigInteger to string
-private:
-    bool equals(BigInteger n1, BigInteger n2);
-    bool less(BigInteger n1, BigInteger n2);
-    bool greater(BigInteger n1, BigInteger n2);
-    string add(string number1, string number2);
-    string subtract(string number1, string number2);
-    string multiply(string n1, string n2);
-    pair<string, long long> divide(string n, long long den);
-    string toString(long long n);
-    long long toInt(string s);
-};
-
-int main()
-{
-    // TEST CODE HERE
-    return 0;
-}
-
-//------------------------------------------------------------------------------
-
-BigInteger::BigInteger()
-{ // empty constructor initializes zero
     number = "0";
     sign = false;
 }
-
-BigInteger::BigInteger(string s)
-{ // "string" constructor
-    if (isdigit(s[0]))
-    { // if not signed
+//-------------------------------------------------------------
+BigInteger::BigInteger(string s) // "string" constructor
+{
+    if (isdigit(s[0])) // if not signed
+    {
         setNumber(s);
         sign = false; // +ve
     }
@@ -85,22 +27,22 @@ BigInteger::BigInteger(string s)
         sign = (s[0] == '-');
     }
 }
-
-BigInteger::BigInteger(string s, bool sin)
-{ // "string" constructor
+//-------------------------------------------------------------
+BigInteger::BigInteger(string s, bool sin) // "string" constructor
+{
     setNumber(s);
     setSign(sin);
 }
-
-BigInteger::BigInteger(int n)
-{ // "int" constructor
+//-------------------------------------------------------------
+BigInteger::BigInteger(int n) // "int" constructor
+{
     stringstream ss;
     string s;
     ss << n;
     ss >> s;
 
-    if (isdigit(s[0]))
-    { // if not signed
+    if (isdigit(s[0])) // if not signed
+    {
         setNumber(s);
         setSign(false); // +ve
     }
@@ -110,108 +52,113 @@ BigInteger::BigInteger(int n)
         setSign(s[0] == '-');
     }
 }
-
+//-------------------------------------------------------------
 void BigInteger::setNumber(string s)
 {
     number = s;
 }
-
-const string &BigInteger::getNumber()
-{ // retrieves the number
+//-------------------------------------------------------------
+const string &BigInteger::getNumber() // retrieves the number
+{
     return number;
 }
-
+//-------------------------------------------------------------
 void BigInteger::setSign(bool s)
 {
     sign = s;
 }
-
+//-------------------------------------------------------------
 const bool &BigInteger::getSign()
 {
     return sign;
 }
-
+//-------------------------------------------------------------
+// returns the absolute value
 BigInteger BigInteger::absolute()
 {
     return BigInteger(getNumber()); // +ve by default
 }
-
+//-------------------------------------------------------------
 void BigInteger::operator=(BigInteger b)
 {
     setNumber(b.getNumber());
     setSign(b.getSign());
 }
-
+//-------------------------------------------------------------
 bool BigInteger::operator==(BigInteger b)
 {
     return equals((*this), b);
 }
-
+//-------------------------------------------------------------
 bool BigInteger::operator!=(BigInteger b)
 {
     return !equals((*this), b);
 }
-
+//-------------------------------------------------------------
 bool BigInteger::operator>(BigInteger b)
 {
     return greater((*this), b);
 }
-
+//-------------------------------------------------------------
 bool BigInteger::operator<(BigInteger b)
 {
     return less((*this), b);
 }
-
+//-------------------------------------------------------------
 bool BigInteger::operator>=(BigInteger b)
 {
     return equals((*this), b) || greater((*this), b);
 }
-
+//-------------------------------------------------------------
 bool BigInteger::operator<=(BigInteger b)
 {
     return equals((*this), b) || less((*this), b);
 }
-
-BigInteger &BigInteger::operator++()
-{ // prefix
+//-------------------------------------------------------------
+// increments the value, then returns its value
+BigInteger &BigInteger::operator++() // prefix
+{
     (*this) = (*this) + 1;
     return (*this);
 }
-
-BigInteger BigInteger::operator++(int)
-{ // postfix
+//-------------------------------------------------------------
+// returns the value, then increments its value
+BigInteger BigInteger::operator++(int) // postfix
+{
     BigInteger before = (*this);
 
     (*this) = (*this) + 1;
 
     return before;
 }
-
-BigInteger &BigInteger::operator--()
-{ // prefix
+//-------------------------------------------------------------
+// decrements the value, then return it
+BigInteger &BigInteger::operator--() // prefix
+{
     (*this) = (*this) - 1;
     return (*this);
 }
-
-BigInteger BigInteger::operator--(int)
-{ // postfix
+//-------------------------------------------------------------
+// return the value, then decrements it
+BigInteger BigInteger::operator--(int) // postfix
+{
     BigInteger before = (*this);
 
     (*this) = (*this) - 1;
 
     return before;
 }
-
+//-------------------------------------------------------------
 BigInteger BigInteger::operator+(BigInteger b)
 {
     BigInteger addition;
-    if (getSign() == b.getSign())
-    { // both +ve or -ve
+    if (getSign() == b.getSign()) // both +ve or -ve
+    {
         addition.setNumber(add(getNumber(), b.getNumber()));
         addition.setSign(getSign());
     }
-    else
-    { // sign different
+    else // sign different
+    {
         if (absolute() > b.absolute())
         {
             addition.setNumber(subtract(getNumber(), b.getNumber()));
@@ -228,13 +175,13 @@ BigInteger BigInteger::operator+(BigInteger b)
 
     return addition;
 }
-
+//-------------------------------------------------------------
 BigInteger BigInteger::operator-(BigInteger b)
 {
     b.setSign(!b.getSign()); // x - y = x + (-y)
     return (*this) + b;
 }
-
+//-------------------------------------------------------------
 BigInteger BigInteger::operator*(BigInteger b)
 {
     BigInteger mul;
@@ -247,7 +194,7 @@ BigInteger BigInteger::operator*(BigInteger b)
 
     return mul;
 }
-
+//-------------------------------------------------------------
 // Warning: Denomerator must be within "long long" size not "BigInteger"
 BigInteger BigInteger::operator/(BigInteger b)
 {
@@ -262,7 +209,7 @@ BigInteger BigInteger::operator/(BigInteger b)
 
     return div;
 }
-
+//-------------------------------------------------------------
 // Warning: Denomerator must be within "long long" size not "BigInteger"
 BigInteger BigInteger::operator%(BigInteger b)
 {
@@ -278,59 +225,61 @@ BigInteger BigInteger::operator%(BigInteger b)
 
     return rem;
 }
-
+//-------------------------------------------------------------
 BigInteger &BigInteger::operator+=(BigInteger b)
 {
     (*this) = (*this) + b;
     return (*this);
 }
-
+//-------------------------------------------------------------
 BigInteger &BigInteger::operator-=(BigInteger b)
 {
     (*this) = (*this) - b;
     return (*this);
 }
-
+//-------------------------------------------------------------
 BigInteger &BigInteger::operator*=(BigInteger b)
 {
     (*this) = (*this) * b;
     return (*this);
 }
-
+//-------------------------------------------------------------
 BigInteger &BigInteger::operator/=(BigInteger b)
 {
     (*this) = (*this) / b;
     return (*this);
 }
-
+//-------------------------------------------------------------
 BigInteger &BigInteger::operator%=(BigInteger b)
 {
     (*this) = (*this) % b;
     return (*this);
 }
-
+//-------------------------------------------------------------
 BigInteger &BigInteger::operator[](int n)
 {
     return *(this + (n * sizeof(BigInteger)));
 }
-
-BigInteger BigInteger::operator-()
-{ // unary minus sign
+//-------------------------------------------------------------
+BigInteger BigInteger::operator-() // unary minus sign
+{
     return (*this) * -1;
 }
-
-BigInteger::operator string()
-{                                                 // for conversion from BigInteger to string
+//-------------------------------------------------------------
+BigInteger::operator string() // for conversion from BigInteger to string
+{
     string signedString = (getSign()) ? "-" : ""; // if +ve, don't print + sign
     signedString += number;
     return signedString;
 }
+//-------------------------------------------------------------
 
 bool BigInteger::equals(BigInteger n1, BigInteger n2)
 {
     return n1.getNumber() == n2.getNumber() && n1.getSign() == n2.getSign();
 }
 
+//-------------------------------------------------------------
 bool BigInteger::less(BigInteger n1, BigInteger n2)
 {
     bool sign1 = n1.getSign();
@@ -342,16 +291,16 @@ bool BigInteger::less(BigInteger n1, BigInteger n2)
     else if (!sign1 && sign2)
         return false;
 
-    else if (!sign1)
-    { // both +ve
+    else if (!sign1) // both +ve
+    {
         if (n1.getNumber().length() < n2.getNumber().length())
             return true;
         if (n1.getNumber().length() > n2.getNumber().length())
             return false;
         return n1.getNumber() < n2.getNumber();
     }
-    else
-    { // both -ve
+    else // both -ve
+    {
         if (n1.getNumber().length() > n2.getNumber().length())
             return true;
         if (n1.getNumber().length() < n2.getNumber().length())
@@ -359,12 +308,14 @@ bool BigInteger::less(BigInteger n1, BigInteger n2)
         return n1.getNumber().compare(n2.getNumber()) > 0; // greater with -ve sign is LESS
     }
 }
-
+//-------------------------------------------------------------
 bool BigInteger::greater(BigInteger n1, BigInteger n2)
 {
     return !equals(n1, n2) && !less(n1, n2);
 }
 
+//-------------------------------------------------------------
+// adds two strings and returns their sum in as a string
 string BigInteger::add(string number1, string number2)
 {
     string add = (number1.length() > number2.length()) ? number1 : number2;
@@ -400,6 +351,8 @@ string BigInteger::add(string number1, string number2)
     return add;
 }
 
+//-------------------------------------------------------------
+// subtracts two strings and returns their sum in as a string
 string BigInteger::subtract(string number1, string number2)
 {
     string sub = (number1.length() > number2.length()) ? number1 : number2;
@@ -427,6 +380,8 @@ string BigInteger::subtract(string number1, string number2)
     return sub;
 }
 
+//-------------------------------------------------------------
+// multiplies two strings and returns their sum in as a string
 string BigInteger::multiply(string n1, string n2)
 {
     if (n1.length() > n2.length())
@@ -468,6 +423,8 @@ string BigInteger::multiply(string n1, string n2)
     return res;
 }
 
+//-------------------------------------------------------------
+// divides string on long long, returns pair(qutiont, remainder)
 pair<string, long long> BigInteger::divide(string n, long long den)
 {
     long long rem = 0;
@@ -491,6 +448,8 @@ pair<string, long long> BigInteger::divide(string n, long long den)
     return make_pair(result, rem);
 }
 
+//-------------------------------------------------------------
+// converts long long to string
 string BigInteger::toString(long long n)
 {
     stringstream ss;
@@ -502,6 +461,8 @@ string BigInteger::toString(long long n)
     return temp;
 }
 
+//-------------------------------------------------------------
+// converts string to long long
 long long BigInteger::toInt(string s)
 {
     long long sum = 0;
@@ -510,4 +471,17 @@ long long BigInteger::toInt(string s)
         sum = (sum * 10) + (s[i] - '0');
 
     return sum;
+}
+
+#endif
+
+int main()
+{
+    BigInteger b("9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999");
+    BigInteger ans, b2("2");
+    cout << ans.multiply(b, b2);
+
+    BigInteger big = b.operator*=(b2);
+    cout << big << endl;
+    return 0;
 }
