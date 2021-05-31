@@ -1,6 +1,8 @@
 #ifndef MINSTACK_H
 #define MINSTACK_H
 #include <vector>
+#include <stack>
+
 using namespace std;
 
 template <class T>
